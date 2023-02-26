@@ -5,13 +5,13 @@
 simple::file_ostream<std::true_type> &operator<<(simple::file_ostream<std::true_type> &out, const LinkedMem &mem)
 {
     out << mem.uiVersion << mem.uiTick;
-    out.write(reinterpret_cast<const char *>(mem.fAvatarPosition), sizeof mem.fAvatarPosition);
-    out.write(reinterpret_cast<const char *>(mem.fAvatarFront), sizeof mem.fAvatarFront);
-    out.write(reinterpret_cast<const char *>(mem.fAvatarFront), sizeof mem.fAvatarFront);
+    out.write(reinterpret_cast<const char *>(mem.avatarPosition), sizeof mem.avatarPosition);
+    out.write(reinterpret_cast<const char *>(mem.avatarFront), sizeof mem.avatarFront);
+    out.write(reinterpret_cast<const char *>(mem.avatarTop), sizeof mem.avatarTop);
     out.write(reinterpret_cast<const char *>(mem.name), sizeof mem.name);
-    out.write(reinterpret_cast<const char *>(mem.fCameraPosition), sizeof mem.fCameraPosition);
-    out.write(reinterpret_cast<const char *>(mem.fCameraFront), sizeof mem.fCameraFront);
-    out.write(reinterpret_cast<const char *>(mem.fCameraTop), sizeof mem.fCameraTop);
+    out.write(reinterpret_cast<const char *>(mem.cameraPosition), sizeof mem.cameraPosition);
+    out.write(reinterpret_cast<const char *>(mem.cameraFront), sizeof mem.cameraFront);
+    out.write(reinterpret_cast<const char *>(mem.cameraTop), sizeof mem.cameraTop);
     out.write(reinterpret_cast<const char *>(mem.identity), sizeof mem.identity);
     out << mem.context_len;
     out.write(reinterpret_cast<const char *>(mem.context), sizeof mem.context);
@@ -19,15 +19,15 @@ simple::file_ostream<std::true_type> &operator<<(simple::file_ostream<std::true_
     return out;
 }
 
-#define COMPARE_PRIMITIVE(left, right, field, flag) \
-    if (left.field != right.field) { \
-        update_fields |= UpdateFieldFlags::flag; \
-        update_stream << right.field; \
+#define COMPARE_PRIMITIVE(left, right, field) \
+    if ((left).field != (right).field) { \
+        update_fields |= UpdateFieldFlags::field; \
+        update_stream << (right).field; \
     }
-#define COMPARE_MEMORY(left, right, field, flag) \
-    if (memcmp(left.field, right.field, sizeof left.field) != 0) { \
-        update_fields |= UpdateFieldFlags::flag; \
-        update_stream.write(reinterpret_cast<const char *>(right.field), sizeof right.field); \
+#define COMPARE_MEMORY(left, right, field) \
+    if (memcmp((left).field, (right).field, sizeof left.field) != 0) { \
+        update_fields |= UpdateFieldFlags::field; \
+        update_stream.write(reinterpret_cast<const char *>((right).field), sizeof (right).field); \
     }
 
 bool DiffAndWriteMumbleLink(const LinkedMem &left, const LinkedMem &right,
@@ -39,31 +39,31 @@ bool DiffAndWriteMumbleLink(const LinkedMem &left, const LinkedMem &right,
     }
     uint32_t update_fields = 0;
     simple::mem_ostream<std::true_type> update_stream{};
-    COMPARE_PRIMITIVE(left, right, uiTick, uiTick);
-    COMPARE_MEMORY(left, right, fAvatarPosition, avatarPosition)
-    COMPARE_MEMORY(left, right, fAvatarFront, avatarFront)
-    COMPARE_MEMORY(left, right, fAvatarTop, avatarTop)
-    COMPARE_MEMORY(left, right, name, name)
-    COMPARE_MEMORY(left, right, fCameraPosition, cameraPosition)
-    COMPARE_MEMORY(left, right, fCameraFront, cameraFront)
-    COMPARE_MEMORY(left, right, fCameraTop, cameraTop)
-    COMPARE_MEMORY(left, right, identity, identity)
+    COMPARE_PRIMITIVE(left, right, uiTick)
+    COMPARE_MEMORY(left, right, avatarPosition)
+    COMPARE_MEMORY(left, right, avatarFront)
+    COMPARE_MEMORY(left, right, avatarTop)
+    COMPARE_MEMORY(left, right, name)
+    COMPARE_MEMORY(left, right, cameraPosition)
+    COMPARE_MEMORY(left, right, cameraFront)
+    COMPARE_MEMORY(left, right, cameraTop)
+    COMPARE_MEMORY(left, right, identity)
     const auto left_context = *reinterpret_cast<const MumbleContext *>(left.context);
     const auto right_context = *reinterpret_cast<const MumbleContext *>(right.context);
-    COMPARE_MEMORY(left_context, right_context, serverAddress, serverAddress)
-    COMPARE_PRIMITIVE(left_context, right_context, mapId, mapId)
-    COMPARE_PRIMITIVE(left_context, right_context, mapType, mapType)
-    COMPARE_PRIMITIVE(left_context, right_context, shardId, shardId)
-    COMPARE_PRIMITIVE(left_context, right_context, instance, instance)
-    COMPARE_PRIMITIVE(left_context, right_context, uiState, uiState)
-    COMPARE_PRIMITIVE(left_context, right_context, compassWidth, compassWidth)
-    COMPARE_PRIMITIVE(left_context, right_context, compassHeight, compassHeight)
-    COMPARE_PRIMITIVE(left_context, right_context, compassRotation, compassRotation)
-    COMPARE_PRIMITIVE(left_context, right_context, playerX, playerX)
-    COMPARE_PRIMITIVE(left_context, right_context, playerY, playerY)
-    COMPARE_PRIMITIVE(left_context, right_context, mapCenterX, mapCenterX)
-    COMPARE_PRIMITIVE(left_context, right_context, mapScale, mapScale)
-    COMPARE_PRIMITIVE(left_context, right_context, mountIndex, mountIndex)
+    COMPARE_MEMORY(left_context, right_context, serverAddress)
+    COMPARE_PRIMITIVE(left_context, right_context, mapId)
+    COMPARE_PRIMITIVE(left_context, right_context, mapType)
+    COMPARE_PRIMITIVE(left_context, right_context, shardId)
+    COMPARE_PRIMITIVE(left_context, right_context, instance)
+    COMPARE_PRIMITIVE(left_context, right_context, uiState)
+    COMPARE_PRIMITIVE(left_context, right_context, compassWidth)
+    COMPARE_PRIMITIVE(left_context, right_context, compassHeight)
+    COMPARE_PRIMITIVE(left_context, right_context, compassRotation)
+    COMPARE_PRIMITIVE(left_context, right_context, playerX)
+    COMPARE_PRIMITIVE(left_context, right_context, playerY)
+    COMPARE_PRIMITIVE(left_context, right_context, mapCenterX)
+    COMPARE_PRIMITIVE(left_context, right_context, mapScale)
+    COMPARE_PRIMITIVE(left_context, right_context, mountIndex)
     const MumbleUpdate update{time, update_fields};
     out_stream << update;
     out_stream << update_stream.get_internal_vec();

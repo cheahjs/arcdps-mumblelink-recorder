@@ -30,32 +30,6 @@ namespace Hardstuck.GuildWars2.MumbleLink
         public MapType MapType { get; set; }
 
         /// <summary>
-        /// Current gamemode, resolved from map type
-        /// </summary>
-        public GameMode GameMode
-        {
-            get
-            {
-                if (MapType == MapType.PvP || MapType == MapType.Tournament)
-                {
-                    return GameMode.PvP;
-                }
-                if (MapType == MapType.WvW || MapType == MapType.WvW_BBL
-                    || MapType == MapType.WvW_EBG || MapType == MapType.WvW_EotM
-                    || MapType == MapType.WvW_GBL || MapType == MapType.WvW_Lounge
-                    || MapType == MapType.WvW_OS || MapType == MapType.WvW_RBL)
-                {
-                    return GameMode.WvW;
-                }
-                if (UIState.HasFlag(UIState.IsInCompetitiveGamemode))
-                {
-                    return GameMode.PvP;
-                }
-                return GameMode.PvE;
-            }
-        }
-
-        /// <summary>
         /// ID of the shard (region)
         /// </summary>
         public uint ShardID { get; set; }

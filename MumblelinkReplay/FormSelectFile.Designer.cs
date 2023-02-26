@@ -1,4 +1,6 @@
-﻿namespace MumblelinkReplay
+﻿using System.Windows.Forms;
+
+namespace MumblelinkReplay
 {
     partial class FormSelectFile
     {

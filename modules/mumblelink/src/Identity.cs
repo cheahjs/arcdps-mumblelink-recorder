@@ -17,19 +17,19 @@ namespace Hardstuck.GuildWars2.MumbleLink
         /// Profession of the character
         /// </summary>
         [JsonPropertyName("profession")]
-        public Profession Profession { get; set; }
+        public uint Profession { get; set; }
 
         /// <summary>
         /// Specialisation of the character
         /// </summary>
         [JsonPropertyName("spec")]
-        public EliteSpecialisation Specialisation { get; set; }
+        public uint Specialisation { get; set; }
 
         /// <summary>
         /// Race of the character
         /// </summary>
         [JsonPropertyName("race")]
-        public Race Race { get; set; }
+        public uint Race { get; set; }
 
         /// <summary>
         /// ID of the current map

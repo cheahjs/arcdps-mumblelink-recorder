@@ -19,5 +19,11 @@
         /// The representation on the Z axis
         /// </summary>
         public float Z { get; set; }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return $"{X}, {Y}, {Z}";
+        }
     }
 }

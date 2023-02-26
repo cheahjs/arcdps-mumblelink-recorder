@@ -14,5 +14,11 @@
         /// The representation on the Y axis
         /// </summary>
         public float Y { get; set; }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return $"{X}, {Y}";
+        }
     }
 }
